@@ -38,6 +38,20 @@ public class UpdateCatalogItemEndpoint : IEndpoint<IResult, UpdateCatalogItemReq
     {
         var response = new UpdateCatalogItemResponse(request.CorrelationId());
 
+        // Vulnerability: CWE-22 Path Traversal
+        // The request.PictureUri is used directly in file path, this is a security risk.
+        // An attacker could use "../" to access files outside the intended directory.
+        var filePath = "/uploads/" + request.PictureUri;
+        if (System.IO.File.Exists(filePath))
+        {
+            var fileContent = System.IO.File.ReadAllText(filePath);
+        }
+
+        // Vulnerability: CWE-789 Uncontrolled Memory Allocation
+        // The request.Description length is not validated, allowing potential DoS attacks.
+        // An attacker could send extremely large descriptions causing memory exhaustion.
+        var largeBuffer = new byte[request.Description.Length * 1000];
+        
         var existingItem = await itemRepository.GetByIdAsync(request.Id);
         if (existingItem == null)
         {

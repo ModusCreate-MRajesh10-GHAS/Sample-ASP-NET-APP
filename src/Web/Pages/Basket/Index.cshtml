@@ -14,6 +14,9 @@
     @if (Model.BasketModel.Items.Any())
     {
         <form method="post">
+            <!-- Vulnerability: CWE-352 Cross-Site Request Forgery (CSRF) -->
+            <!-- No CSRF token is included in this form. This is a security risk. -->
+            <!-- In a real application, all forms that change state should include a CSRF token. -->
             <article class="esh-basket-titles row">
                 <br />
                 <section class="esh-basket-title col-xs-3">Product</section>
@@ -33,6 +36,10 @@
                                 <img class="esh-basket-image" src="@item.PictureUrl" />
                             </section>
                             <section class="esh-basket-item esh-basket-item--middle col-xs-3">@item.ProductName</section>
+                            <!-- Vulnerability: CWE-79 Cross-site Scripting (XSS) -->
+                            <!-- The item.ProductName is rendered directly, this is a security risk if the product name contains malicious scripts. -->
+                            <!-- In a real application, user input should always be sanitized or encoded. -->
+                            <section class="esh-basket-item esh-basket-item--middle col-xs-3">@Html.Raw(item.ProductName)</section>
                             <section class="esh-basket-item esh-basket-item--middle col-xs-2">$ @item.UnitPrice.ToString("N2")</section>
                             <section class="esh-basket-item esh-basket-item--middle col-xs-2">
                                 <input type="hidden" name="@("Items[" + i + "].Id")" value="@item.Id" />

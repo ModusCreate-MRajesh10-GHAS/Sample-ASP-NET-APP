@@ -11,17 +11,21 @@ on:
 jobs:
     analyze:
         name: Analyze
+
         runs-on: ubuntu-latest
 
         permissions:
-            actions: read
-            contents: read
-            security-events: write
+          actions: read
+          contents: read
+          security-events: write
 
         strategy:
             fail-fast: false
             matrix:
-                language: [ 'csharp' ]
+                language: 
+                    - 'csharp'
+                    - actions
+                    - javascript-typescript
 
         steps:
             - name: Checkout repository

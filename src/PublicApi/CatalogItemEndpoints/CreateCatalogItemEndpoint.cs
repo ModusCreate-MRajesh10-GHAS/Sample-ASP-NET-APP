@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +40,16 @@ public class CreateCatalogItemEndpoint : IEndpoint<IResult, CreateCatalogItemReq
     public async Task<IResult> HandleAsync(CreateCatalogItemRequest request, IRepository<CatalogItem> itemRepository)
     {
         var response = new CreateCatalogItemResponse(request.CorrelationId());
+
+        // Vulnerability: Command Injection (demonstration for SAST tools)
+        // This demonstrates a potential security vulnerability where user input could be used in commands
+        // In production, this type of pattern should be avoided and input should be sanitized
+        if (Environment.GetEnvironmentVariable("ENABLE_VULNERABLE_CODE") == "true")
+        {
+            // DANGEROUS: User input directly in command - this is for SAST demonstration only
+            var unsafeCommand = $"echo {request.Name}";
+            // System.Diagnostics.Process.Start("cmd.exe", "/C " + unsafeCommand);
+        }
 
         var catalogItemNameSpecification = new CatalogItemNameSpecification(request.Name);
         var existingCataloogItem = await itemRepository.CountAsync(catalogItemNameSpecification);

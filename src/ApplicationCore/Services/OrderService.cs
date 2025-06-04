@@ -11,6 +11,11 @@ namespace Microsoft.eShopWeb.ApplicationCore.Services;
 
 public class OrderService : IOrderService
 {
+    // Vulnerability: Hardcoded secrets in service class
+    private const string PAYMENT_API_KEY = "pk_test_1234567890abcdefghijklmnopqrstuvwxyz";
+    private const string EMAIL_SERVICE_KEY = "SG.1234567890abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz1234567890";
+    private const string ENCRYPTION_KEY = "ThisIsMySecretEncryptionKey123456789!";
+    
     private readonly IRepository<Order> _orderRepository;
     private readonly IUriComposer _uriComposer;
     private readonly IRepository<Basket> _basketRepository;
