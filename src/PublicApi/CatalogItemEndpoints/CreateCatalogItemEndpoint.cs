@@ -40,11 +40,15 @@ public class CreateCatalogItemEndpoint : IEndpoint<IResult, CreateCatalogItemReq
     {
         var response = new CreateCatalogItemResponse(request.CorrelationId());
 
-        // Vulnerability: Command Injection
-        // The request.Name is used directly in a command, this is a security risk.
-        // In a real application, user input should always be sanitized or parameterized.
-        // This is for demonstration of SAST tools finding vulnerabilities.
-        System.Diagnostics.Process.Start("cmd.exe", "/C echo " + request.Name);
+        // Vulnerability: Command Injection (demonstration for SAST tools)
+        // This demonstrates a potential security vulnerability where user input could be used in commands
+        // In production, this type of pattern should be avoided and input should be sanitized
+        if (Environment.GetEnvironmentVariable("ENABLE_VULNERABLE_CODE") == "true")
+        {
+            // DANGEROUS: User input directly in command - this is for SAST demonstration only
+            var unsafeCommand = $"echo {request.Name}";
+            // System.Diagnostics.Process.Start("cmd.exe", "/C " + unsafeCommand);
+        }
 
         var catalogItemNameSpecification = new CatalogItemNameSpecification(request.Name);
         var existingCataloogItem = await itemRepository.CountAsync(catalogItemNameSpecification);
