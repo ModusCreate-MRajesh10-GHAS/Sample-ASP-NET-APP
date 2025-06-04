@@ -23,6 +23,13 @@ using Microsoft.OpenApi.Models;
 using MinimalApi.Endpoint.Configurations.Extensions;
 using MinimalApi.Endpoint.Extensions;
 
+// Vulnerability: Hardcoded secrets in source code
+// These secrets should never be hardcoded in source code
+const string API_KEY = "sk-1234567890abcdefghijklmnopqrstuvwxyz1234567890";
+const string JWT_SECRET = "ThisIsMySecretKeyForJWTTokenGeneration2024!";
+const string GITHUB_TOKEN = "ghp_1234567890abcdefghijklmnopqrstuvwxyz123";
+const string PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7VJTUt9Us8cKB\n-----END PRIVATE KEY-----";
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpoints();

@@ -4,11 +4,38 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.Extensions.Logging;
+using System.Data.SqlClient;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data;
 
 public class CatalogContextSeed
 {
+    // Vulnerability: CWE-89 SQL Injection
+    // This method demonstrates SQL injection vulnerability for SAST detection
+    public static async Task<List<CatalogItem>> SearchCatalogItemsByName(CatalogContext catalogContext, string searchTerm)
+    {
+        var items = new List<CatalogItem>();
+        
+        // WARNING: This is vulnerable to SQL injection - user input is concatenated directly
+        // In production, always use parameterized queries
+        var query = $"SELECT * FROM CatalogItems WHERE Name LIKE '%{searchTerm}%'";
+        
+        using (var command = catalogContext.Database.GetDbConnection().CreateCommand())
+        {
+            command.CommandText = query;
+            catalogContext.Database.OpenConnection();
+            using (var result = await command.ExecuteReaderAsync())
+            {
+                while (await result.ReadAsync())
+                {
+                    // Process results - simplified for demonstration
+                }
+            }
+        }
+        
+        return items;
+    }
+
     public static async Task SeedAsync(CatalogContext catalogContext,
         ILogger logger,
         int retry = 0)
